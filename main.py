@@ -8,7 +8,7 @@ def main():
     print(f"Screen height: {SCREEN_HEIGHT}")
 
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
-    time = pygame.time.Clock()
+    clock = pygame.time.Clock()
     dt = 0
 
 
@@ -17,11 +17,12 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
-        pygame.Surface.fill(screen, (0, 0, 0))
+        screen.fill((0, 0, 0))
         pygame.display.flip()
-        time.tick(60)
-        dt = time.get_time() / 1000
-    
+        dt = clock.tick(60) / 1000
+        print(dt)
+        
+        
 
 if __name__ == "__main__":
     main()
