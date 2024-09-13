@@ -48,7 +48,7 @@ def main():
         for obj in asteroids:
             for bullet in shots:
                 if bullet.collision(obj):
-                    obj.kill()
+                    obj.split()
                     bullet.kill()
                     
 
