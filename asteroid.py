@@ -2,6 +2,7 @@ import pygame
 import random
 from circleshape import CircleShape
 from constants import *
+from fragments import Fragment
 
 
 class Asteroid(CircleShape):
@@ -14,10 +15,13 @@ class Asteroid(CircleShape):
     def update(self, dt):
         self.position += self.velocity * dt
 
-    def split(self):
+    def split(self, fragments_group):
         self.kill()
+        
+
+
         if self.radius <= ASTEROID_MIN_RADIUS:
-            return
+            Fragment.explode(self, fragments_group)
         
         angle = random.uniform(20, 50)
         first_split = pygame.math.Vector2.rotate(self.velocity, angle)
