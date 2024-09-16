@@ -48,3 +48,6 @@ class Player(CircleShape):
             shot.velocity = pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOOT_SPEED
             self.groups()[2].add(shot)
             self.timer = PLAYER_SHOOT_COOLDOWN
+
+    def reset_position(self, x, y):
+        self.position = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
