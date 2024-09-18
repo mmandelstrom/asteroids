@@ -6,6 +6,7 @@ from asteroid import Asteroid
 from asteroidfield import *
 from shot import Shot
 from fragments import Fragment
+from textoutput import scoreboard, end_screen
 
 
 def main():
@@ -15,6 +16,8 @@ def main():
     print(f"Screen width: {SCREEN_WIDTH}")
     print(f"Screen height: {SCREEN_HEIGHT}")
 
+    
+    my_font = pygame.font.SysFont('Arial', 30)
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
     clock = pygame.time.Clock()
     dt = 0
@@ -37,14 +40,8 @@ def main():
     Shot.containers = (shots, updatable, drawable)
     Fragment.containers = (asteroids, updatable, drawable)
 
-    my_font = pygame.font.SysFont('freesansbold.ttf', 30)
+   
     
-    
-
-
-
-
-
 
 
     while True:
@@ -69,24 +66,24 @@ def main():
                 
 
             elif asteroid.collision(player) and life <= 0:
-                print(f"Game over! Your score was {score}")
-                exit()
-           
+                pass
+
             
 
             for shot in shots:
                 if asteroid.collision(shot):
-                    if asteroid.__class__ == Fragment:
-                        return
+                 
                     asteroid.split(fragments_group)
                     shot.kill()
                     score += 1
+
+
+        if life < 1:
+            end_screen(screen, score, my_font)
                                       
 
-        score_text_surface = my_font.render(f'Score: {score}', False, (255, 255, 255))
-        life_text_surface = my_font.render(f'Lives: {life}', False, (255, 255, 255))
-        screen.blit(score_text_surface, (1180,10))
-        screen.blit(life_text_surface, (1180,30))
+        scoreboard(screen, score, my_font, life)
+
 
         for obj in drawable:
             obj.draw(screen)
