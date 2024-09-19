@@ -6,7 +6,7 @@ from asteroid import Asteroid
 from asteroidfield import *
 from shot import Shot
 from fragments import Fragment
-from textoutput import scoreboard, end_screen
+from textoutput import scoreboard, end_screen, restart_game
 
 
 def main():
@@ -31,18 +31,37 @@ def main():
     text = pygame.sprite.Group()
     fragments_group = pygame.sprite.Group()
 
+    def initialize_game_objects():
+        Asteroid.containers = (asteroids, updatable, drawable)
+        Player.containers = (updatable, drawable, shots)
+        AsteroidField.containers = (updatable)
+        Shot.containers = (shots, updatable, drawable)
+        Fragment.containers = (asteroids, updatable, drawable)
 
-    Asteroid.containers = (asteroids, updatable, drawable)
-    Player.containers = (updatable, drawable, shots)
-    AsteroidField.containers = (updatable)
-    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-    asteroid_field = AsteroidField()
-    Shot.containers = (shots, updatable, drawable)
-    Fragment.containers = (asteroids, updatable, drawable)
+        player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+        asteroid_field = AsteroidField()
 
-   
+        return player
+    
+    def reset_player_and_board():
+        updatable.empty()
+        drawable.empty()
+        asteroids.empty()
+        shots.empty()
+        fragments_group.empty()
+        Asteroid.containers = (asteroids, updatable, drawable)
+        Player.containers = (updatable, drawable, shots)
+        AsteroidField.containers = (updatable)
+        Shot.containers = (shots, updatable, drawable)
+        Fragment.containers = (asteroids, updatable, drawable)
+
+        player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+        asteroid_field = AsteroidField()
+
+        return player
     
 
+    player = initialize_game_objects()
 
     while True:
         
@@ -62,13 +81,8 @@ def main():
         for asteroid in asteroids:
             if asteroid.collision(player) and life > 0:
                 life -= 1
-                player.reset_position(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+                player = initialize_game_objects()
                 
-
-            elif asteroid.collision(player) and life <= 0:
-                pass
-
-            
 
             for shot in shots:
                 if asteroid.collision(shot):
@@ -79,7 +93,13 @@ def main():
 
 
         if life < 1:
-            end_screen(screen, score, my_font)
+            restart_values = end_screen(screen, score, my_font, life)
+            if restart_values is not None:
+                life, score = restart_values
+                player = reset_player_and_board()
+                
+            
+
                                       
 
         scoreboard(screen, score, my_font, life)
