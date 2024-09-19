@@ -43,22 +43,12 @@ def main():
 
         return player
     
-    def reset_player_and_board():
+    def clear_groups():
         updatable.empty()
         drawable.empty()
         asteroids.empty()
         shots.empty()
         fragments_group.empty()
-        Asteroid.containers = (asteroids, updatable, drawable)
-        Player.containers = (updatable, drawable, shots)
-        AsteroidField.containers = (updatable)
-        Shot.containers = (shots, updatable, drawable)
-        Fragment.containers = (asteroids, updatable, drawable)
-
-        player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-        asteroid_field = AsteroidField()
-
-        return player
     
 
     player = initialize_game_objects()
@@ -96,7 +86,8 @@ def main():
             restart_values = end_screen(screen, score, my_font, life)
             if restart_values is not None:
                 life, score = restart_values
-                player = reset_player_and_board()
+                clear_groups()
+                player = initialize_game_objects()
                 
             
 
