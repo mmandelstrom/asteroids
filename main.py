@@ -1,12 +1,15 @@
 import pygame
 from constants import *
-from player import Player
+from player import *
 from circleshape import *
 from asteroid import Asteroid
 from asteroidfield import *
 from shot import Shot
 from fragments import Fragment
 from textoutput import scoreboard, end_screen, restart_game
+from powerupfield import *
+from powerup import Powerup
+
 
 
 def main():
@@ -30,6 +33,7 @@ def main():
     shots = pygame.sprite.Group()
     text = pygame.sprite.Group()
     fragments_group = pygame.sprite.Group()
+    powerups = pygame.sprite.Group()
 
     def initialize_game_objects():
         Asteroid.containers = (asteroids, updatable, drawable)
@@ -37,9 +41,12 @@ def main():
         AsteroidField.containers = (updatable)
         Shot.containers = (shots, updatable, drawable)
         Fragment.containers = (asteroids, updatable, drawable)
+        Powerup.containers = (powerups, updatable, drawable)
+        PowerupField.containers = (updatable)
 
         player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
         asteroid_field = AsteroidField()
+        powerup_field = PowerupField()
 
         return player
     
@@ -58,6 +65,8 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
+            if event.type == REMOVE_POWERUP_EVENT:
+                player.remove_powerup()
             
         screen.fill((0, 0, 0))
 
@@ -81,6 +90,10 @@ def main():
                     shot.kill()
                     score += 1
 
+            for powerup in powerups:
+                if powerup.collision(player):
+                    player.use_powerup()
+                    powerup.kill()
 
         if life < 1:
             restart_values = end_screen(screen, score, my_font, life)
