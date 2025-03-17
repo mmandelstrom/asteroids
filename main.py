@@ -19,18 +19,28 @@ def main():
     x = SCREEN_WIDTH / 2 #Static values to make player spawn in the middle of screen
     y = SCREEN_HEIGHT / 2
 
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+
+    Player.containers = (updatable, drawable)#Add all future player objects to updatable/drawable groups
+
     player = Player(x, y)#Create player object
+    dt = 0#Initialize dt variable
 
     while True:#Endless gameloop
         for event in pygame.event.get():#Create button to close window
             if event.type == pygame.QUIT:
                 return
 
+        updatable.update(dt)
         screen.fill("black")
-        player.draw(screen) #Draw player each iteration
+        for obj in drawable:
+            obj.draw(screen) #Draw player each iteration
+            
         pygame.display.flip()#Refresh screen, should be called last in loop
-        dt = clock.tick(60) / 1000 #Pauses game for 1/60th of a second, sets dt to amount of time since it was last called in milliseconds
 
+        dt = clock.tick(60) / 1000 #Pauses game for 1/60th of a second, sets dt to amount of time since it was last called in milliseconds
+        
 
 if __name__ == "__main__":
     main()
