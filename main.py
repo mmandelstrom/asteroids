@@ -6,6 +6,7 @@ from constants import * #Static values for screen size/asteroids size and speed
 from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
+from shot import Shot
 import sys
 
 clock = pygame.time.Clock()#Clock to track gametime
@@ -22,13 +23,15 @@ def main():
     x = SCREEN_WIDTH / 2 #Static values to make player spawn in the middle of screen
     y = SCREEN_HEIGHT / 2
 
-    updatable = pygame.sprite.Group()
+    updatable = pygame.sprite.Group() #Create groups
     drawable = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
 
     Player.containers = (updatable, drawable)#Add all future player objects to updatable/drawable groups
     Asteroid.containers = (asteroids, updatable, drawable)
     AsteroidField.containers = (updatable)
+    Shot.containers = (updatable, drawable, shots)
 
     player = Player(x, y)#Create player object
     asteroidfield = AsteroidField() #Create asteroidfield object
@@ -45,6 +48,12 @@ def main():
             if obj.collision_check(player):
                 print("Game over!")
                 sys.exit()
+
+        for obj in asteroids:#Collision check for asteroids and bullets
+            for bullet in shots:
+                if obj.collision_check(bullet):
+                    obj.split()
+                    bullet.kill()
 
         screen.fill("black")
         for obj in drawable:

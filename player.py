@@ -1,12 +1,14 @@
 from circleshape import CircleShape
 from constants import *
 import pygame
+from shot import Shot
 
 class Player(CircleShape): #Class that inherits from circleshape
 
     def __init__(self, x, y):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
+        self.shoot_cooldown = 0
 
    
     def triangle(self):
@@ -28,6 +30,7 @@ class Player(CircleShape): #Class that inherits from circleshape
         self.position += forward * PLAYER_SPEED * dt
 
     def update(self, dt): #keybindings to call methods
+        self.shoot_cooldown -= dt #Update shoot timer
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_a]:
@@ -41,3 +44,16 @@ class Player(CircleShape): #Class that inherits from circleshape
 
         if keys[pygame.K_s]:
             self.move(-dt)
+
+        if keys[pygame.K_SPACE]:
+            self.shoot()
+
+    def shoot(self):
+        if self.shoot_cooldown > 0:#Only allow player to shoot every 0.3s
+            return
+        
+        shot = Shot(self.position[0], self.position[1], SHOT_RADIUS)
+        shot.velocity = pygame.Vector2(0, 1)
+        shot.velocity = shot.velocity.rotate(self.rotation)
+        shot.velocity *= PLAYER_SHOOT_SPEED
+        self.shoot_cooldown = PLAYER_SHOOT_COOLDOWN
