@@ -4,6 +4,8 @@
 import pygame
 from constants import * #Static values for screen size/asteroids size and speed
 from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
 
 clock = pygame.time.Clock()#Clock to track gametime
 dt = 0 #Delta time variable
@@ -21,10 +23,14 @@ def main():
 
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
 
     Player.containers = (updatable, drawable)#Add all future player objects to updatable/drawable groups
+    Asteroid.containers = (asteroids, updatable, drawable)
+    AsteroidField.containers = (updatable)
 
     player = Player(x, y)#Create player object
+    asteroidfield = AsteroidField() #Create asteroidfield object
     dt = 0#Initialize dt variable
 
     while True:#Endless gameloop
@@ -36,7 +42,7 @@ def main():
         screen.fill("black")
         for obj in drawable:
             obj.draw(screen) #Draw player each iteration
-            
+
         pygame.display.flip()#Refresh screen, should be called last in loop
 
         dt = clock.tick(60) / 1000 #Pauses game for 1/60th of a second, sets dt to amount of time since it was last called in milliseconds
