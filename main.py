@@ -6,6 +6,7 @@ from constants import * #Static values for screen size/asteroids size and speed
 from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
+import sys
 
 clock = pygame.time.Clock()#Clock to track gametime
 dt = 0 #Delta time variable
@@ -39,6 +40,12 @@ def main():
                 return
 
         updatable.update(dt)
+
+        for obj in asteroids:#Collision check, if player object collides with asteroid exit game
+            if obj.collision_check(player):
+                print("Game over!")
+                sys.exit()
+
         screen.fill("black")
         for obj in drawable:
             obj.draw(screen) #Draw player each iteration
